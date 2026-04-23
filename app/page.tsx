@@ -54,19 +54,23 @@ export default function Home() {
     setIsTimerRunning(true);
     let timeLeft = seconds;
 
+    // 프론트 화면용 타이머 (화면이 꺼지면 멈추지만 상관없음)
     const interval = setInterval(() => {
       timeLeft -= 1;
       setSeconds(timeLeft);
-
       if (timeLeft <= 0) {
         clearInterval(interval);
         setIsTimerRunning(false);
-        triggerPush();
       }
     }, 1000);
+
+    // ⭐️ 시작과 동시에 백엔드로 '몇 초 뒤에 쏴줘'라고 요청을 넘김
+    triggerPush(seconds);
   };
 
-  const triggerPush = async () => {
+  const triggerPush = async (delaySeconds: number) => {
+    // 주의: Vercel 무료 버전은 함수 실행 시간이 10~15초로 제한되어 있으므로
+    // 테스트는 5~10초 사이로 짧게 맞춰서 진행해주세요!
     await fetch('/api/push', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -74,6 +78,7 @@ export default function Home() {
         subscription,
         title: '⏰ 타이머 종료!',
         body: '설정한 시간이 모두 지나갔습니다.',
+        delay: delaySeconds, // 대기할 시간을 같이 보냄
       }),
     });
   };

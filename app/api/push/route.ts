@@ -9,7 +9,11 @@ export async function POST(req: Request) {
       process.env.VAPID_PRIVATE_KEY!,
     );
 
-    const { subscription, title, body } = await req.json();
+    const { subscription, title, body, delay } = await req.json();
+
+    if (delay && delay > 0) {
+      await new Promise((resolve) => setTimeout(resolve, delay * 1000));
+    }
 
     await webpush.sendNotification(subscription, JSON.stringify({ title, body }));
 
