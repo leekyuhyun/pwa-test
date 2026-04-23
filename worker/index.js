@@ -1,6 +1,3 @@
-// 서비스 워커 즉시 활성화 (업데이트 시 대기 방지)
-self.skipWaiting();
-
 self.addEventListener('push', function (event) {
   const data = event.data
     ? event.data.json()
