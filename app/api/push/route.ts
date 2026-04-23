@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 import webpush from 'web-push';
 
-webpush.setVapidDetails(
-  'mailto:test@example.com', // 임의의 이메일 유지
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-);
-
 export async function POST(req: Request) {
   try {
+    webpush.setVapidDetails(
+      'mailto:test@example.com',
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+      process.env.VAPID_PRIVATE_KEY!,
+    );
+
     const { subscription, title, body } = await req.json();
 
     await webpush.sendNotification(subscription, JSON.stringify({ title, body }));
